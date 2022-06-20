@@ -17,8 +17,6 @@ const Popup = () => {
         <PersistGate loading={null} persistor={persistor}>
           <div
             style={{
-              width: 400,
-              height: 400,
               padding: "20px"
             }}>
             <Router />

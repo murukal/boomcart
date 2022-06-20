@@ -1,5 +1,9 @@
 // third
-import { createSlice } from "@reduxjs/toolkit"
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
+
+import { whoAmI } from "../apis/schemas/user"
+import type { User } from "../typings/user"
+import { TOKEN_KEY, globalStorage } from "../utils/app"
 
 /**
  * 用户信息
@@ -7,7 +11,23 @@ import { createSlice } from "@reduxjs/toolkit"
 export class UserProfile {
   isLoggedIn: boolean = false
   token: string = ""
+  user: User = undefined
 }
+
+/**
+ * 异步设置token
+ */
+export const setToken = createAsyncThunk("setToken", async () => {
+  return (await globalStorage.get<string>(TOKEN_KEY)) || ""
+})
+
+/**
+ * 获取用户信息
+ */
+export const getUser = createAsyncThunk("getUser", async () => {
+  const { data } = await whoAmI()
+  return data.whoAmI
+})
 
 /**
  * 用户模块
@@ -15,17 +35,18 @@ export class UserProfile {
 const userProfileSlice = createSlice({
   name: "user-profile",
   initialState: { ...new UserProfile() },
-  reducers: {
-    login: (state) => {
-      state.isLoggedIn = true
-    }
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(setToken.fulfilled, (state, action) => {
+        state.token = action.payload
+      })
+      .addCase(getUser.fulfilled, (state, action) => {
+        state.user = action.payload
+        state.isLoggedIn = state.user.isVerified
+      })
   }
 })
-
-/**
- * actions
- */
-export const { login } = userProfileSlice.actions
 
 /**
  * reducer

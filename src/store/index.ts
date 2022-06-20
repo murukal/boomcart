@@ -18,7 +18,6 @@ import {
   persistReducer,
   persistStore
 } from "@plasmohq/redux-persist"
-import { Storage } from "@plasmohq/storage"
 
 // project
 import userProfile, { UserProfile } from "./user-profile"
@@ -48,33 +47,11 @@ const persistedReducer = persistReducer(persistConfig as any, reducer)
 /**
  * 生成store
  */
-export const store = configureStore({
-  reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [
-          FLUSH,
-          REHYDRATE,
-          PAUSE,
-          PERSIST,
-          PURGE,
-          REGISTER,
-          RESYNC
-        ]
-      }
-    })
+export const store = configureStore<State>({
+  reducer: persistedReducer
 })
 
 /**
  * 生成persistor
  */
 export const persistor = persistStore(store)
-
-// This is what makes Redux sync properly with multiple pages
-// Open your extension's options page and popup to see it in action
-new Storage().watch({
-  [`persist:${persistConfig.key}`]: () => {
-    persistor.resync()
-  }
-})

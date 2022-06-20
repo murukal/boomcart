@@ -9,5 +9,8 @@ module.exports = {
       serif: ["Georgia", "serif"]
     }
   },
-  variants: { extend: { typography: ["dark"] } }
+  variants: { extend: { typography: ["dark"] } },
+  corePlugins: {
+    preflight: false
+  }
 }

@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux"
-import type { State } from "src/store"
 
+import type { State } from "../../store"
 import Login from "../Login"
 
 const Router = () => {
