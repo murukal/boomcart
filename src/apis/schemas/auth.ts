@@ -1,5 +1,6 @@
 import { TypedDocumentNode, gql } from "@apollo/client"
-import type { LoginInput } from "src/typings/auth"
+
+import type { LoginInput } from "../../typings/auth"
 
 export const LOGIN: TypedDocumentNode<
   {

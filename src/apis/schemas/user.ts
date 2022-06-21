@@ -12,7 +12,6 @@ export const WHO_AM_I: TypedDocumentNode<{
     whoAmI {
       id
       username
-      isVerified
     }
   }
 `

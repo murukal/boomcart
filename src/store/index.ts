@@ -1,4 +1,8 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit"
+import {
+  CombinedState,
+  combineReducers,
+  configureStore
+} from "@reduxjs/toolkit"
 import { localStorage } from "redux-persist-webextension-storage"
 
 import {
@@ -14,7 +18,12 @@ import {
 } from "@plasmohq/redux-persist"
 
 import { globalStorage } from "../utils/app"
-import userProfile from "./user-profile"
+import userProfile, { UserProfile } from "./user-profile"
+
+/**
+ * State ts声明
+ */
+export type State = CombinedState<{ userProfile: UserProfile }>
 
 /**
  * 合并reducer
