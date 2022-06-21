@@ -1,22 +1,21 @@
-import {
-  ApolloClient,
-  ApolloError,
-  ApolloQueryResult,
-  FetchResult,
-  InMemoryCache,
-  MutationOptions,
-  NetworkStatus,
-  OperationVariables,
-  QueryOptions,
-  createHttpLink
-} from "@apollo/client"
+import { ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client"
 import { setContext } from "@apollo/client/link/context"
-import type { GraphQLError } from "graphql"
 
 import { store } from "../store"
+import { AppID } from "../utils/app"
 
 const httpLink = createHttpLink({
-  uri: "http://localhost:9100/graphql"
+  // 动态获取url
+  uri: (operation) => {
+    // 根据请求客户端appId标识不同，获取不同的请求地址
+    // 后端对不同的api进行了服务隔离
+    const context = operation.getContext()
+    const appId = context.appId
+
+    // 返回指定的URL
+    // 为了解决跨域不携带cookie问题，在nginx层做反向代理，前端请求同域地址
+    return `https://api.fantufantu.com/${appId || AppID.Boomemory}/graphql`
+  }
 })
 
 const authLink = setContext((_, { headers }) => {

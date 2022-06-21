@@ -9,6 +9,14 @@ import { getUser, setToken } from "../store/user-profile"
 export const TOKEN_KEY = "CART_TOKEN"
 
 /**
+ * 服务列表
+ */
+export enum AppID {
+  Boomemory = "boomemory",
+  Boomart = "boomart"
+}
+
+/**
  * 生成全局的storage
  */
 export const globalStorage = new Storage()
