@@ -42,25 +42,3 @@ const client = new ApolloClient({
 })
 
 export default client
-
-export const fetcher = {
-  /** 查询 */
-  query: <T = any, V = OperationVariables>(options: QueryOptions<V, T>) =>
-    client.query<T, V>(options).catch(
-      (error: ApolloError): ApolloQueryResult<null> => ({
-        data: null,
-        error,
-        loading: false,
-        networkStatus: NetworkStatus.error
-      })
-    ),
-
-  /** 变更 */
-  mutate: <T = any, V = OperationVariables>(options: MutationOptions<T, V>) =>
-    client.mutate<T, V>(options).catch(
-      (error: GraphQLError): FetchResult<T> => ({
-        data: null,
-        errors: [error]
-      })
-    )
-}

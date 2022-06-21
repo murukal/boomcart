@@ -21,11 +21,6 @@ export const reinitialize = async (token: string) => {
   // 在应用缓存中存储token
   await globalStorage.set(TOKEN_KEY, token)
 
-  console.log(
-    "await storage.get(TOKEN_KEY)===",
-    await globalStorage.get(TOKEN_KEY)
-  )
-
   const dispatch = store.dispatch
 
   // 在redux中存储token

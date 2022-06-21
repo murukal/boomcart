@@ -1,7 +1,8 @@
 // third
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 
-import { whoAmI } from "../apis/schemas/user"
+import client from "../apis"
+import { WHO_AM_I } from "../apis/schemas/user"
 import type { User } from "../typings/user"
 import { TOKEN_KEY, globalStorage } from "../utils/app"
 
@@ -25,8 +26,12 @@ export const setToken = createAsyncThunk("setToken", async () => {
  * 获取用户信息
  */
 export const getUser = createAsyncThunk("getUser", async () => {
-  const { data } = await whoAmI()
-  return data.whoAmI
+  const res = await client.query({
+    query: WHO_AM_I,
+    fetchPolicy: "no-cache"
+  })
+
+  return res.data.whoAmI
 })
 
 /**
@@ -43,7 +48,7 @@ const userProfileSlice = createSlice({
       })
       .addCase(getUser.fulfilled, (state, action) => {
         state.user = action.payload
-        state.isLoggedIn = state.user.isVerified
+        state.isLoggedIn = !!state.user
       })
   }
 })
