@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux"
 
 import type { State } from "../../store"
+import Home from "../Home"
 import Login from "../Login"
 
 const Router = () => {
@@ -17,7 +18,7 @@ const Router = () => {
     return <Login />
   }
 
-  return null
+  return <Home />
 }
 
 export default Router
