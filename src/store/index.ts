@@ -1,11 +1,5 @@
-// third
-import {
-  CombinedState,
-  combineReducers,
-  configureStore
-} from "@reduxjs/toolkit"
-import type { PersistConfig } from "redux-persist"
-import storage from "redux-persist/lib/storage"
+import { combineReducers, configureStore } from "@reduxjs/toolkit"
+import { localStorage } from "redux-persist-webextension-storage"
 
 import {
   FLUSH,
@@ -19,39 +13,57 @@ import {
   persistStore
 } from "@plasmohq/redux-persist"
 
-// project
-import userProfile, { UserProfile } from "./user-profile"
+import { globalStorage } from "../utils/app"
+import userProfile from "./user-profile"
 
 /**
- * 联合reducer
+ * 合并reducer
  */
-const reducer = combineReducers({
+const rootReducer = combineReducers({
   userProfile
 })
-
-export type State = CombinedState<{ userProfile: UserProfile }>
 
 /**
  * persist配置
  */
-const persistConfig: PersistConfig<State> = {
+const persistConfig = {
   key: "root",
-  storage
+  version: 1,
+  storage: localStorage
 }
 
 /**
- * 序列化reducer
+ * 生成reducer
  */
-const persistedReducer = persistReducer(persistConfig as any, reducer)
+const persistedReducer = persistReducer(persistConfig, rootReducer)
 
 /**
  * 生成store
  */
-export const store = configureStore<State>({
-  reducer: persistedReducer
+export const store = configureStore({
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [
+          FLUSH,
+          REHYDRATE,
+          PAUSE,
+          PERSIST,
+          PURGE,
+          REGISTER,
+          RESYNC
+        ]
+      }
+    })
 })
 
-/**
- * 生成persistor
- */
 export const persistor = persistStore(store)
+
+// This is what makes Redux sync properly with multiple pages
+// Open your extension's options page and popup to see it in action
+globalStorage.watch({
+  [`persist:${persistConfig.key}`]: () => {
+    persistor.resync()
+  }
+})
